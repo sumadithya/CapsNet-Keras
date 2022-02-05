@@ -10,8 +10,6 @@ Usage:
 
 Result:
     About 55 seconds per epoch on two GTX1080Ti GPU cards
-
-Author: Xifeng Guo, E-mail: `guoxifeng1990@163.com`, Github: `https://github.com/XifengGuo/CapsNet-Keras`
 """
 
 from keras import optimizers
@@ -71,7 +69,6 @@ def train(model, data, args):
     plot_log(args.save_dir + '/log.csv', show=True)
 
     return model
-
 
 if __name__ == "__main__":
     import numpy as np
