@@ -27,16 +27,9 @@ pip install tensorflow==2.2.0
 ```
 git clone https://github.com/sumadithya/CapsNet-Keras.git capsnet-keras
 cd capsnet-keras
-git checkout tf2.2 # Only if use Tensorflow>=2.0
 ```
 
-**Step 2.
-Install Keras==2.0.7 with TensorFlow==1.2 backend.**
-```
-pip install tensorflow-gpu==1.2
-pip install keras==2.0.7
-```
-**or install Tensorflow>=2.0**
+**install Tensorflow>=2.0**
 ```
 pip install tensorflow==2.2
 ```
