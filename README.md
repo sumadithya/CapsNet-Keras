@@ -1,5 +1,5 @@
 # CapsNet-Keras
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/XifengGuo/CapsNet-Keras/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/sumadithya/CapsNet-Keras/blob/master/LICENSE)
 
 A Keras/TensorFlow2.2 implementation of CapsNet in the paper:   
 [Sara Sabour, Nicholas Frosst, Geoffrey E Hinton. Dynamic Routing Between Capsules. NIPS 2017](https://arxiv.org/abs/1710.09829)   
@@ -15,13 +15,6 @@ Sounds crazy, maybe I misunderstood.
 the coefficient for the loss is `lam_recon=0.0005*784=0.392`.   
 This should be **equivalent** with using SSE (sum squared error) and `lam_recon=0.0005` as in the paper.
 
-## Warnning
-
-Please use Keras==2.0.7 with TensorFlow==1.2 backend, or the `K.batch_dot` function may not work correctly.
-
-However, if you use **Tensorflow>=2.0**, then checkout branch [tf2.2](https://github.com/XifengGuo/CapsNet-Keras/tree/tf2.2)
-
-
 ## Usage
 
 **Step 1.
@@ -32,7 +25,7 @@ pip install tensorflow==2.2.0
 
 **Step 2. Clone this repository to local.**
 ```
-git clone https://github.com/XifengGuo/CapsNet-Keras.git capsnet-keras
+git clone https://github.com/sumadithya/CapsNet-Keras.git capsnet-keras
 cd capsnet-keras
 git checkout tf2.2 # Only if use Tensorflow>=2.0
 ```
