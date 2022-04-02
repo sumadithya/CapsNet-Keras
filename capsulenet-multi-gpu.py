@@ -82,7 +82,7 @@ if __name__ == "__main__":
     # setting the hyper parameters
     import argparse
     parser = argparse.ArgumentParser(description="Capsule Network on MNIST.")
-    parser.add_argument('--epochs', default=50, type=int)
+    parser.add_argument('--epochs', default=3, type=int)
     parser.add_argument('--batch_size', default=300, type=int)
     parser.add_argument('--lam_recon', default=0.392, type=float,
                         help="The coefficient for the loss of decoder")
