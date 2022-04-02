@@ -246,8 +246,8 @@ if __name__ == "__main__":
     # load data
     # (x_train, y_train), (x_test, y_test) = load_mnist()
     (x_train, y_train), (x_test, y_test) = load_custom(
-        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/train',
-        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/train.csv',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test.csv',
         '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test',
         '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test.csv')
 
