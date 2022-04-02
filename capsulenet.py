@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 from utils import combine_images
 from PIL import Image
 from capsulelayers import CapsuleLayer, PrimaryCap, Length, Mask
+import pandas as pd
 
 K.set_image_data_format('channels_last')
 
@@ -41,21 +42,29 @@ def CapsNet(input_shape, n_class, routings, batch_size):
 
     # Layer 1: Just a conventional Conv2D layer
     conv1 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv1')(x)
+    conv2 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv2')(conv1)
+    conv3 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv3')(conv2)
+    conv4 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv4')(conv3)
 
     # Layer 2: Conv2D layer with `squash` activation, then reshape to [None, num_capsule, dim_capsule]
-    primarycaps = PrimaryCap(conv1, dim_capsule=8, n_channels=32, kernel_size=9, strides=2, padding='valid')
+    primarycaps = PrimaryCap(conv4, dim_capsule=4, n_channels=64, kernel_size=5, strides=2, padding='valid')
 
     # Layer 3: Capsule layer. Routing algorithm works here.
-    digitcaps = CapsuleLayer(num_capsule=n_class, dim_capsule=16, routings=routings, name='digitcaps')(primarycaps)
+
+    # classcaps1 = CapsuleLayer(num_capsule=3625216, dim_capsule=4, routings=routings, name='classcaps')(primarycaps)
+    # classcaps2 = CapsuleLayer(num_capsule=116, dim_capsule=8, routings=routings, name='classcaps')(classcaps1)
+    # classcaps = CapsuleLayer(num_capsule=n_class, dim_capsule=16, routings=routings, name='classcaps')(classcaps2)
+
+    classcaps = CapsuleLayer(num_capsule=n_class, dim_capsule=16, routings=routings, name='classcaps')(primarycaps)
 
     # Layer 4: This is an auxiliary layer to replace each capsule with its length. Just to match the true label's shape.
     # If using tensorflow, this will not be necessary. :)
-    out_caps = Length(name='capsnet')(digitcaps)
+    out_caps = Length(name='capsnet')(classcaps)
 
     # Decoder network.
     y = layers.Input(shape=(n_class,))
-    masked_by_y = Mask()([digitcaps, y])  # The true label is used to mask the output of capsule layer. For training
-    masked = Mask()(digitcaps)  # Mask using the capsule with maximal length. For prediction
+    masked_by_y = Mask()([classcaps, y])  # The true label is used to mask the output of capsule layer. For training
+    masked = Mask()(classcaps)  # Mask using the capsule with maximal length. For prediction
 
     # Shared Decoder model in training and prediction
     decoder = models.Sequential(name='decoder')
@@ -70,8 +79,8 @@ def CapsNet(input_shape, n_class, routings, batch_size):
 
     # manipulate model
     noise = layers.Input(shape=(n_class, 16))
-    noised_digitcaps = layers.Add()([digitcaps, noise])
-    masked_noised_y = Mask()([noised_digitcaps, y])
+    noised_classcaps = layers.Add()([classcaps, noise])
+    masked_noised_y = Mask()([noised_classcaps, y])
     manipulate_model = models.Model([x, y, noise], decoder(masked_noised_y))
     return train_model, eval_model, manipulate_model
 
@@ -171,6 +180,29 @@ def load_mnist():
     y_test = to_categorical(y_test.astype('float32'))
     return (x_train, y_train), (x_test, y_test)
 
+def load_custom(train_path, train_csv, test_path, test_csv):
+    x_train = np.empty((960, 512, 512))
+    x_test = np.empty((240, 512, 512))
+
+    y_train = np.empty((960,1))
+    y_test = np.empty((240,1))
+
+    train_file = pd.read_csv(train_csv)
+    test_file = pd.read_csv(test_csv)
+
+    train_file = train_file[["Image", "Id"]]
+    test_file = test_file[["Image", "Id"]]
+
+    for i, row in train_file.iterrows():
+        x_train[i] = Image.open(train_path+'/'+row["Image"])
+        y_train[i] = row["Id"]
+
+    for i, row in test_file.iterrows():
+        x_test[i] = Image.open(test_path+'/'+row["Image"])
+        y_test[i] = row["Id"]    
+
+    return (x_train, y_train), (x_test, y_test)
+
 if __name__ == "__main__":
     import os
     import argparse
@@ -207,7 +239,12 @@ if __name__ == "__main__":
         os.makedirs(args.save_dir)
 
     # load data
-    (x_train, y_train), (x_test, y_test) = load_mnist()
+    # (x_train, y_train), (x_test, y_test) = load_mnist()
+    (x_train, y_train), (x_test, y_test) = load_custom(
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/train',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/train.csv',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test.csv')
 
     # define model
     model, eval_model, manipulate_model = CapsNet(input_shape=x_train.shape[1:],

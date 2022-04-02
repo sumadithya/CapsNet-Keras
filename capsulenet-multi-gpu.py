@@ -17,7 +17,7 @@ from keras import backend as K
 
 K.set_image_data_format('channels_last')
 
-from capsulenet import CapsNet, margin_loss, load_mnist, manipulate_latent, test
+from capsulenet import CapsNet, margin_loss, load_mnist, load_custom, manipulate_latent,test
 
 
 def train(model, data, args):
@@ -108,7 +108,12 @@ if __name__ == "__main__":
         os.makedirs(args.save_dir)
 
     # load data
-    (x_train, y_train), (x_test, y_test) = load_mnist()
+    # (x_train, y_train), (x_test, y_test) = load_mnist()
+    (x_train, y_train), (x_test, y_test) = load_custom(
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/train',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/train.csv',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test.csv')
 
     # define model
     with tf.device('/cpu:0'):
