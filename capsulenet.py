@@ -246,8 +246,8 @@ if __name__ == "__main__":
     # load data
     # (x_train, y_train), (x_test, y_test) = load_mnist()
     (x_train, y_train), (x_test, y_test) = load_custom(
-        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test',
-        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test.csv',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/train',
+        '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/train.csv',
         '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test',
         '/kaggle/input/messidor-resized512-green-channel/Messidor_resized_green/test.csv')
 
@@ -262,7 +262,7 @@ if __name__ == "__main__":
     if args.weights is not None:  # init the model weights with provided one
         model.load_weights(args.weights)
     if not args.testing:
-        train(model=model, data=((x_train, y_train), (x_test, y_test)), args=args)
+        train(model=model, data=((x_train[:240], y_train[:240]), (x_test, y_test)), args=args)
     else:  # as long as weights are given, will run testing
         if args.weights is None:
             print('No weights are provided. Will test using random initialized weights.')
