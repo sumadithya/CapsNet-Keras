@@ -201,6 +201,11 @@ def load_custom(train_path, train_csv, test_path, test_csv):
         x_test[i] = Image.open(test_path+'/'+row["Image"])
         y_test[i] = row["Id"]    
 
+    x_train = x_train.reshape(-1, 28, 28, 1).astype('float32') / 255.
+    x_test = x_test.reshape(-1, 28, 28, 1).astype('float32') / 255.
+    y_train = to_categorical(y_train.astype('float32'))
+    y_test = to_categorical(y_test.astype('float32'))
+
     return (x_train, y_train), (x_test, y_test)
 
 if __name__ == "__main__":
