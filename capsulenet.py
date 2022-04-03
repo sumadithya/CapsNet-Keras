@@ -42,10 +42,10 @@ def CapsNet(input_shape, n_class, routings, batch_size):
 
     # Layer 1: Just a conventional Conv2D layer
     conv1 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv1')(x)
-    # conv2 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv2')(conv1)
-    # conv3 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv3')(conv2)
-    conv3 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv3')(conv1)
-    conv4 = layers.Conv2D(filters=128, kernel_size=5, strides=1, padding='valid', activation='relu', name='conv4')(conv3)
+    conv2 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv2')(conv1)
+    conv3 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv3')(conv2)
+    # conv3 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv3')(conv1)
+    conv4 = layers.Conv2D(filters=256, kernel_size=9, strides=1, padding='valid', activation='relu', name='conv4')(conv3)
 
     # Layer 2: Conv2D layer with `squash` activation, then reshape to [None, num_capsule, dim_capsule]
     primarycaps = PrimaryCap(conv4, dim_capsule=4, n_channels=64, kernel_size=5, strides=2, padding='valid')
@@ -263,7 +263,7 @@ if __name__ == "__main__":
     if args.weights is not None:  # init the model weights with provided one
         model.load_weights(args.weights)
     if not args.testing:
-        train(model=model, data=((x_train[:240], y_train[:240]), (x_test, y_test)), args=args)
+        train(model=model, data=((x_train, y_train), (x_test, y_test)), args=args)
     else:  # as long as weights are given, will run testing
         if args.weights is None:
             print('No weights are provided. Will test using random initialized weights.')
